@@ -1,0 +1,99 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<string>
+
+using namespace std;
+
+enum TipFacultate { DE_STAT = 1, PRIVATA = 2 };
+
+class Facultate {
+private:
+	const int id;
+	string denumire;
+	int nrAniStudiu;
+	int* nrStudentiAn;
+	TipFacultate tip;
+
+public:
+	static int nrFacultati;
+
+	//constructor default
+	Facultate() :id(++nrFacultati) {
+		this->denumire = "Anonima";
+		this->nrAniStudiu = 0;
+		this->nrStudentiAn = nullptr;
+		this->tip = PRIVATA;
+	}
+
+	//constructor cu parametrii
+	Facultate(string denumire, int nrAniStudiu, int* nrStudentiAn, TipFacultate tip) :id(++nrFacultati) {
+		this->denumire = denumire;
+		this->nrAniStudiu = nrAniStudiu;
+		this->nrStudentiAn = new int[nrAniStudiu];
+		for (int i = 0; i < nrAniStudiu; i++) {
+			this->nrStudentiAn[i] = nrStudentiAn[i];
+		}
+		this->tip = tip;
+		nrFacultati++;
+	}
+
+	//constructor de copiere
+	Facultate(const Facultate& f) :id(f.id) {
+		this->denumire = f.denumire;
+		this->nrAniStudiu = f.nrAniStudiu;
+		this->tip = f.tip;
+		if (f.nrStudentiAn != nullptr && f.nrAniStudiu!=0) {
+			this->nrStudentiAn = new int[f.nrAniStudiu];
+			for (int i = 0; i < f.nrAniStudiu; i++) {
+				this->nrStudentiAn[i] = f.nrStudentiAn[i];
+			}
+		}
+		else {
+			nrStudentiAn = nullptr;
+		}
+	}
+
+	//functie de afisare
+	void afisareFacultate() {
+		cout << endl << "Id facultate: " << this->id;
+		cout << endl << "Numele facultatii: " << this->denumire;
+		cout << endl << "Numarul anilor de studiu: " << this->nrAniStudiu;
+		cout << endl << "Tipul facultatii este: ";
+		if (tip == 1) {
+			cout << endl << "de stat";
+		}
+		else {
+			cout << endl << "privata";
+		}
+		if (this->nrAniStudiu > 0) {
+			cout << endl << "Numarul studentilor din fiecare an este: ";
+			for (int i = 0; i < this->nrAniStudiu; i++) {
+				cout << endl << "Anul " << i+1 << ": ";
+				cout << this->nrStudentiAn[i];
+			}
+		}
+	}
+
+	//destructor
+	~Facultate() {
+		if (this->nrStudentiAn != nullptr) {
+			delete[] this->nrStudentiAn;
+		}
+	}
+};
+
+int Facultate::nrFacultati = 0;
+
+//main
+void main() {
+	Facultate fMedicina;
+	fMedicina.afisareFacultate();
+	int* studenti = new int[3] { 150, 120, 100 };
+	Facultate* fCSIE = new Facultate("CSIE", 3, studenti, DE_STAT);
+	fCSIE->afisareFacultate();
+	Facultate fCCIA = *fCSIE;
+	fCCIA.afisareFacultate();
+	cout << endl << "In total sunt " << Facultate::nrFacultati << " facultati.";
+	delete[] studenti;
+	delete fCSIE;
+}

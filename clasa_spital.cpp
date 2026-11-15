@@ -11,6 +11,7 @@ private:
 	const int id;
 	string denumire;
 	int nrSectii;
+    float pretConsultatie;
 	TipSpital tip;
 	int* nrPacientiSectie;
 
@@ -20,13 +21,15 @@ public:
 	Spital() :id(++nrSpitale) {
 		this->denumire = "Anonim";
 		this->nrSectii = 0;
+		this->pretConsultatie=0;
 		this->tip = DE_STAT;
 		this->nrPacientiSectie = nullptr;
 	}
 
-	Spital(int id, string denumire, int nrSectii, TipSpital tip, int* nrPacientiSectie) :id(id) {
+	Spital(int id, string denumire, int nrSectii, float pretConsultatie, TipSpital tip, int* nrPacientiSectie) :id(id) {
 		this->denumire = denumire;
 		this->nrSectii = nrSectii;
+		this->pretConsultatie=pretConsultatie;
 		this->tip = tip;
 		this->nrPacientiSectie = new int [nrSectii];
 		for (int i = 0; i < this->nrSectii; i++) {
@@ -38,6 +41,7 @@ public:
 	Spital(const Spital& s) :id(s.id) {
 		this->denumire = s.denumire;
 		this->nrSectii = s.nrSectii;
+		this->pretConsultatie=s.pretConsultatie;
 		this->tip = s.tip;
 		if (s.nrPacientiSectie != nullptr) {
 			this->nrPacientiSectie = new int[s.nrSectii];
@@ -53,6 +57,7 @@ public:
 	void operator=(const Spital& s) {
 		this->denumire = s.denumire;
 		this->nrSectii = s.nrSectii;
+		this->pretConsultatie=s.pretConsultatie;
 		this->tip = s.tip;
 		if (nrPacientiSectie != nullptr) {
 			delete[] this->nrPacientiSectie;
@@ -106,6 +111,7 @@ public:
 		cout << endl << "Id: " << this->id;
 		cout << endl << "Denumire: " << this->denumire;
 		cout << endl << "Numar sectii: " << this->nrSectii;
+		cout<<endl<<"Pretul unei consultatii: "<<this->pretConsultatie;
 		cout << endl << "Tip spital: ";
 		if (tip == 1) {
 			cout << "DE STAT";
@@ -130,6 +136,9 @@ public:
 			delete[] this->nrPacientiSectie;
 		}
 	}
+void operator+=(float pretExtra) {
+		this->pretConsultatie += pretExtra;
+	}
 };
 
 int Spital::nrSpitale = 0;
@@ -137,9 +146,11 @@ int Spital::nrSpitale = 0;
 void main() {
 	Spital sMunicipal;
 	sMunicipal.afisareSpital();
+	sMunicipal += 100;
+	sMunicipal.afisareSpital();
 
 	int* nrPacientiSectie = new int[3] {56, 30, 12};
-	Spital* pJudetean=new Spital(2, "Spitalul Judetean", 3, PRIVAT, nrPacientiSectie);
+	Spital* pJudetean=new Spital(2, "Spitalul Judetean", 3, 250, PRIVAT, nrPacientiSectie);
 	pJudetean->afisareSpital();
 
 	try {
